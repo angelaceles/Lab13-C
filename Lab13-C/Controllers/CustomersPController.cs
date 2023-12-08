@@ -13,14 +13,16 @@ namespace Lab13_C.Controllers
         {
             _context = context;
         }
-        [HttpGet]
-        public async List<Customer> GetCustomersP() 
+        
+        [HttpPost]
+        public List<Customer> GetInvoicesByFilter([FromBody] Customer filter)
         {
-            if (_context.Customers == null)
-            {
-                return NotFound();
-            }
-            return await _context.Customers.ToListAsync();
+            var response = _context.Customers
+                .Where(x => (x.FirstName == filter.FirstName)
+                         && (x.LastName == filter.LastName))
+                .OrderByDescending(x => x.LastName)
+                .ToList();
+            return response;
         }
     }
 }
